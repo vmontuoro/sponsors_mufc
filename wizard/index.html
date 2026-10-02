@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Find your sponsorship fit</title>
+<title>What sort of sponsor are you?</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
@@ -228,28 +228,28 @@ const PACKS = {
 
 /* Q3 carries the most weight, so nobody modest is shown the $40K jersey front. */
 const Q = [
-  {id:'who', q:'Who are we talking to?', sub:'So we pitch this at the right level.', opts:[
+  {id:'who', q:'What kind of supporter are you?', sub:'So we pitch this at the right level.', opts:[
+    {t:'A club family', d:'Parent, past player or supporter', because:"you're already part of the club family",
+     w:{bronze:3,comm:3}},
     {t:'A local business', d:'Serving families around Manningham', because:"you're a local business serving families nearby",
      w:{bronzeplus:3,silver:2,prog:1}},
     {t:'A larger business or brand', d:'Reaching beyond the local area', because:'you want reach beyond the local area',
      w:{plat:3,gold:2}},
-    {t:'A club family', d:'Parent, past player or supporter', because:"you're already part of the club family",
-     w:{bronze:3,comm:3}},
     {t:'A trade or supplier', d:'You work with clubs like ours', because:'you work with clubs like ours',
      w:{silver:2,gold:2,plat:1}}
   ]},
-  {id:'goal', q:'What do you want it to do for you?', sub:'Pick the one that matters most.', opts:[
-    {t:'Put our name where the most people see it', d:'On the field, in every photo and post', because:'you want your name where the most people see it',
+  {id:'goal', q:'What support can we provide you?', sub:'Pick the one that matters most.', opts:[
+    {t:'Put my name everywhere', d:'On the field, in every photo and post', because:'you want your name everywhere',
      w:{plat:3,gold:2,silver:2}},
-    {t:'Reach local families directly', d:'In their inbox and on their phone', because:'you want to reach local families directly',
+    {t:'Connect me directly to local families', d:'In their inbox and on their phone', because:'you want a direct line to local families',
      w:{bronzeplus:4,prog:2,silver:1}},
-    {t:'Show we back the community', d:'Not just advertise to it', because:'you want to be seen backing the community',
+    {t:'Show I support the community', d:'Not just advertise to it', because:'you want to show you support the community',
      w:{comm:4,prog:3,bronzeplus:1}},
     {t:'Open doors', d:'Meet people and get in the room', because:'you want to meet people through the club',
      w:{bronze:3,prog:2,gold:1}}
   ]},
   {id:'size', q:'How big a commitment are you thinking?', sub:'No wrong answer — it just points us to the right shelf.', opts:[
-    {t:'Something modest to start with', d:'See how it goes, build from there', because:"you're starting modestly",
+    {t:'Modest to start', d:'See how it goes, build from there', because:"you're starting modestly",
      w:{bronzeplus:4,bronze:4,comm:3,prog:1}, band:1},
     {t:'A solid presence people notice', d:'Visible all season, without the top-end spend', because:'you want a presence people notice',
      w:{silver:4,prog:4,bronzeplus:2,gold:1}, band:2},
@@ -258,12 +258,12 @@ const Q = [
     {t:'The biggest spot in the club', d:'Front and centre, everywhere', because:'you want the biggest spot in the club',
      w:{plat:5,gold:2}, band:4}
   ]},
-  {id:'part', q:'Anything in particular you want to back?', sub:'Some sponsors have someone in mind. Plenty do not.', opts:[
+  {id:'part', q:'Are you passionate about where your support goes?', sub:'Some sponsors have someone in mind. Plenty do not.', opts:[
     {t:'The whole club', d:'No preference', because:'you want to back the whole club',
      w:{plat:2,gold:2,silver:1,bronzeplus:1}},
     {t:'One program', d:'All Abilities, girls, MiniRoos, Soccer Mums, Over 40s', because:'you want to back one program in particular',
      w:{prog:5}},
-    {t:'Our top teams', d:'Senior men and women, elite youth', because:'you want to back our top teams',
+    {t:'Our elite teams', d:'Senior men and women, elite youth', because:'you want to back our elite teams',
      w:{plat:3,gold:2}},
     {t:'A player', d:'A senior player, or a junior who needs help with fees', because:'you want to back a player directly',
      w:{bronze:4,comm:4}}
@@ -325,8 +325,8 @@ const esc = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':
 function screenHTML(n){
   if (n === 0) return `<section class="screen welcome">
     <img class="crest" src="${IMG.crest}" alt="Manningham United FC crest">
-    <h1>Find your<span>sponsorship fit</span></h1>
-    <p>Four quick questions, a look at the club, then the pack that suits you best.</p>
+    <h1>What sort of<span>sponsor are you?</span></h1>
+    <p>Four quick questions, a look at how united we are, then the pack that fits you best.</p>
     <p class="mins">About a minute.</p>
   </section>`;
 
