@@ -294,7 +294,7 @@ const CARDS = [
    nums:[[1100,'','players in club kit every weekend'],[68,'','teams, under 4s to over 40s'],
          [1284,'','matches played in 2025'],[4185,'','training sessions in 2025'],
          [150,'','volunteers running the club'],[5,'','grounds across Manningham'],
-         [1500,'~','visitors on a game day'],[8000,'+','hours of football a year']],
+         [1500,'approx ','visitors on a game day'],[8000,'+','hours of football a year']],
    kicker:'A whole suburb of families, every weekend from February to September.'},
   {type:'reach', eyebrow:'The reach', title:'On every family phone', img:'p_mrf',
    nums:[[8379,'','followers on Instagram and Facebook'],[467,'K','views in the last 28 days'],[5000,'+','members on the club app']],
@@ -305,13 +305,22 @@ const CARDS = [
    body:'Worn in 1,284 matches a season, and in every photo and post that follows.'}
 ];
 
+/* these packs carry no kit or apparel branding, so the placements card is skipped for them */
+const NO_PLACEMENTS = ['bronzeplus','bronze','comm'];
+
 const PHONE = '+61419405111';
 const FULL_PAGE = '../';
 
 /* ---------------- state + rendering ---------------- */
 const answers = {};
-let step = 0;                       // 0 welcome, 1..4 questions, 5..8 cards, 9 result
-const TOTAL = 9;
+let step = 0;                       // 0 welcome, then questions, then cards, then the result
+/* the card list depends on the answers, so it is worked out fresh each render */
+function cards(){
+  const answered = Q.every(q => answers[q.id] !== undefined);
+  if (!answered) return CARDS;
+  return NO_PLACEMENTS.includes(recommend().pick) ? CARDS.filter(c => c.type !== 'places') : CARDS;
+}
+const total = () => Q.length + cards().length + 1;
 const main = document.getElementById('main');
 const railEl = document.getElementById('rail');
 const whereEl = document.getElementById('where');
@@ -345,8 +354,8 @@ function screenHTML(n){
     </section>`;
   }
 
-  if (n <= Q.length + CARDS.length){
-    const c = CARDS[n - Q.length - 1];
+  if (n <= Q.length + cards().length){
+    const c = cards()[n - Q.length - 1];
 
     if (c.type === 'programs'){
       const slides = PROGRAMS.map((p,i)=>`<div class="pslide${i?'':' on'}" style="background-image:url('${IMG[p[0]]}')">
@@ -363,7 +372,7 @@ function screenHTML(n){
     }
 
     const nums = c.nums ? `<div class="bignums">${c.nums.map(x=>
-      `<div><b data-to="${x[0]}" data-suffix="${x[1].replace('~','')}" data-prefix="${x[1]==='~'?'~':''}">0</b><span>${esc(x[2])}</span></div>`).join('')}</div>` : '';
+      `<div><b data-to="${x[0]}" data-suffix="${/^[A-Za-z+]/.test(x[1])&&x[1].length<3?x[1]:''}" data-prefix="${x[1].trim().length>2?x[1]:''}">0</b><span>${esc(x[2])}</span></div>`).join('')}</div>` : '';
     const pic = c.img ? `<div class="pic" style="background-image:url('${IMG[c.img]}')"></div>` : '';
     const places = c.places ? `<div class="places">${c.places.map(p=>`<figure><img src="${IMG[p[0]]}" alt="${esc(p[1])}" loading="lazy"><figcaption>${esc(p[1])}</figcaption></figure>`).join('')}</div>` : '';
     return `<section class="screen card"><div class="inner${c.type==='numbers'?' numcard':''}">
@@ -427,22 +436,22 @@ function render(){
   countUp(el);
   startPrograms(el);
 
-  railEl.style.width = (step / TOTAL * 100) + '%';
+  railEl.style.width = (step / total() * 100) + '%';
   whereEl.textContent = step === 0 ? 'Find your fit'
     : step <= Q.length ? 'Find your fit'
-    : step <= Q.length + CARDS.length ? 'About the club'
+    : step <= Q.length + cards().length ? 'About the club'
     : 'Your best fit';
   restartBtn.hidden = step === 0;
-  if (step === TOTAL){
+  if (step === total()){
     const r = recommend(), pk = PACKS[r.pick];
     const msg = `Hi David, we did the fit finder on the sponsor page and it pointed us to Pack ${pk.no} — ${pk.tier}, ${pk.name} (${pk.price}).\nName:\nBusiness:`;
     textBtn.href = 'sms:' + PHONE + '?&body=' + encodeURIComponent(msg);
   }
-  textBtn.hidden = step !== TOTAL;
+  textBtn.hidden = step !== total();
   backBtn.hidden = step === 0;
-  nextBtn.hidden = step === TOTAL || (step >= 1 && step <= Q.length && answers[Q[step-1].id] === undefined);
+  nextBtn.hidden = step === total() || (step >= 1 && step <= Q.length && answers[Q[step-1].id] === undefined);
   nextBtn.textContent = step === 0 ? 'Start'
-    : step === Q.length + CARDS.length ? 'See my best fit'
+    : step === Q.length + cards().length ? 'See my best fit'
     : step <= Q.length ? 'Next' : 'Next';
   if (step >= 1 && step <= Q.length){
     const chosen = answers[Q[step-1].id];
@@ -490,7 +499,7 @@ function startPrograms(root){
   }));
 }
 
-function go(n){ step = Math.max(0, Math.min(TOTAL, n)); render(); }
+function go(n){ step = Math.max(0, Math.min(total(), n)); render(); }
 
 main.addEventListener('click', e => {
   const b = e.target.closest('.opt'); if (!b) return;
